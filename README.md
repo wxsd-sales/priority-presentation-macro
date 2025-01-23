@@ -13,8 +13,19 @@ Go into detail about the implementation.   3-4 Sentences
 
 ### Flow Diagram
 
-<!-- *MANDATORY*  Insert Your Flow Diagram Here (if small PoC, alternative option is to include break down how it works here instead of diagram) -->
-![image/gif](insert img link here)
+```mermaid
+flowchart TD
+    A[Presentation Change] --> C@{ shape: delay, label: "Debounce Events" }
+    B[Signal Change] --> C
+    C --> D(Query Current<br> Presenation<br>& Signal Statuses)
+    D --> E(Identify Highest Priority<br>Source With Signal)
+    E --> F{Lower Priority Sources Presenting?}
+    F -->|Yes| G(Stop Lower Priority Presentations)
+    F -->|No| H{Highest Priority Source Presenting?}
+    G --> H
+    H -->|No| J(Start Highest Priority Presentation Source)
+    H -->|Yes| I(Highest Priority Source<br>Already Presenting<br>No Further Action)
+```
 
 
 
