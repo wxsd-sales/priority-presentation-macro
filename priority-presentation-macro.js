@@ -82,7 +82,7 @@ async function processPresentationState() {
   const presentationSources = await getPresentationSources();
   const sourceSignals = await getSignalSources();
 
-  presentationSourceOrder = config.presentationSourceOrder;
+  const presentationSourceOrder = config.presentationSourceOrder;
 
   console.log('Processing Presentation State')
   console.log('Presentation Sources', JSON.stringify(presentationSources))
