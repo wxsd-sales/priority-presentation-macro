@@ -68,11 +68,7 @@ async function checkPresentation(status) {
 async function checkSignal({SignalState}) {
   if(!SignalState) return
   console.debug('Connector SignalState Change:', SignalState)
-  const processEvent = Array.isArray(connectors) ? true : connectors?.SignalState && connectors?.SignalState != 'DetectingFormat';
-  if (!processEvent) {
-    console.log('No Signal State Change present - ignoring')
-    return
-  }
+  if( SignalState != 'DetectingFormat' ) return
   processPresentationStateDebounce()
 }
 
