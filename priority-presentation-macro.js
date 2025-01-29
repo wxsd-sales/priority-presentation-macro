@@ -45,11 +45,11 @@ const config = {
 const processPresentationStateDebounce = debounce(processPresentationState, 2000)
 
 // Upon macro start check presentation status
-//xapi.Status.Conference.Presentation.LocalInstance.get().then(checkPresentation)
+xapi.Status.Conference.Presentation.LocalInstance.get().then(checkPresentation)
 
 // Subscribe to Presentation and Video Input Connector changes
-//xapi.Status.Conference.Presentation.LocalInstance.on(checkPresentation);
-//xapi.Status.Video.Input.Connector.on(checkSignal)
+xapi.Status.Conference.Presentation.LocalInstance.on(checkPresentation);
+xapi.Status.Video.Input.Connector.on(checkSignal)
 
 
 
@@ -82,7 +82,7 @@ async function processPresentationState() {
   const presentationSources = await getPresentationSources();
   const sourceSignals = await getSignalSources();
 
-  presentationSourceOrder = config.ppresentationSourceOrder;
+  presentationSourceOrder = config.presentationSourceOrder;
 
   console.log('Processing Presentation State')
   console.log('Presentation Sources', JSON.stringify(presentationSources))
