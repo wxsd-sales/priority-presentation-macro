@@ -26,7 +26,7 @@ import xapi from 'xapi';
 const config = {
   presentationSourceOrder: [2, 3],  // List of required presentation sources in order or priority
   noSignalAutoHalfwake: true,       // Automatically put the device in half wake when no presentation source signal is detected
-  alert: {  
+  alert: {
     showAlert: true,                // Show alert when switching from one old source to another
     alertDetails: {                 // Alert Details: https://roomos.cisco.com/xapi/Command.UserInterface.Message.Alert.Display/
       Duration: 30,
@@ -49,13 +49,7 @@ xapi.Status.Conference.Presentation.LocalInstance.get().then(checkPresentation)
 
 // Subscribe to Presentation and Video Input Connector changes
 xapi.Status.Conference.Presentation.LocalInstance.on(checkPresentation);
-xapi.Status.Video.Input.Connector.on(checkSignal)
-
-
-
-//xapi.Status.Video.Input.Connector.get().then(status => console.log(JSON.stringify(status)))
-xapi.Status.Video.Input.Connector['*'].SignalState.on(status => console.log(JSON.stringify(status)))
-xapi.Status.Video.Input.Connector.SignalState.on(status => console.log(JSON.stringify(status)))
+xapi.Status.Video.Input.Connector.SignalState.on(checkSignal)
 
 
 // Process Presentation Changes
@@ -65,10 +59,10 @@ async function checkPresentation(status) {
 }
 
 // Process Signal Changes
-async function checkSignal({SignalState}) {
-  if(!SignalState) return
-  console.debug('Connector SignalState Change:', SignalState)
-  if( SignalState != 'DetectingFormat' ) return
+async function checkSignal(status) {
+  if (!status) return
+  console.debug('Connector SignalState Change:', status)
+  if (status == 'DetectingFormat') return
   processPresentationStateDebounce()
 }
 
@@ -87,7 +81,7 @@ async function processPresentationState() {
 
   const validSourceSignals = presentationSourceOrder.some(source => sourceSignals.includes(source))
 
-  if(!validSourceSignals && config.noSignalHalfwake){
+  if (!validSourceSignals && config.noSignalHalfwake) {
     console.log('No required sources present, entering halfwake')
     xapi.Command.Standby.Halfwake();
     return
