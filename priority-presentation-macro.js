@@ -112,15 +112,15 @@ async function processPresentationState() {
 
   let endPresentations;
 
-  if (!requiredSource) {
-    console.log('No required source found');
-    endPresentations = presentationSources;
-  } else {
+  if (requiredSource) {
     // Identify redundant presentations
     endPresentations = presentationSources.filter(source => source != requiredSource)
+  } else {
+    console.log('No required source found');
+    endPresentations = presentationSources;
   }
 
-  
+
 
   // Stop any redundant presentations
   for (let i = 0; i < endPresentations.length; i++) {
@@ -140,6 +140,7 @@ async function processPresentationState() {
   }
   await sleep(200)
 
+  if (!requiredSource) return
   console.log('Starting Presentation Source:', requiredSource)
   xapi.Command.Presentation.Start({ PresentationSource: requiredSource });
 
