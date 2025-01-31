@@ -115,11 +115,12 @@ async function processPresentationState() {
   if (!requiredSource) {
     console.log('No required source found');
     endPresentations = presentationSources;
-    return
+  } else {
+    // Identify redundant presentations
+    endPresentations = presentationSources.filter(source => source != requiredSource)
   }
 
-  // Identify redundant presentations
-  endPresentations = presentationSources.filter(source => source != requiredSource)
+  
 
   // Stop any redundant presentations
   for (let i = 0; i < endPresentations.length; i++) {
