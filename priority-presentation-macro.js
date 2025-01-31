@@ -44,12 +44,23 @@ const config = {
 // Create debounce for processing presentation state
 const processPresentationStateDebounce = debounce(processPresentationState, 2000)
 
-// Upon macro start check presentation status
-xapi.Status.Conference.Presentation.LocalInstance.get().then(checkPresentation)
+xapi.Status.SystemUnit.Uptime.get()
+  .then(uptime => {
+    const parsedUptime = parseInt(uptime)
+    if (parsedUptime > 60) return init()
+    setTimeout(init, (60 - parsedUptime) * 1000)
+  })
 
-// Subscribe to Presentation and Video Input Connector changes
-xapi.Status.Conference.Presentation.LocalInstance.on(checkPresentation);
-xapi.Status.Video.Input.Connector.SignalState.on(checkSignal)
+function init() {
+
+  // Upon macro start check presentation status
+  xapi.Status.Conference.Presentation.LocalInstance.get().then(checkPresentation)
+
+  // Subscribe to Presentation and Video Input Connector changes
+  xapi.Status.Conference.Presentation.LocalInstance.on(checkPresentation);
+  xapi.Status.Video.Input.Connector.SignalState.on(checkSignal)
+}
+
 
 
 // Process Presentation Changes
@@ -98,13 +109,17 @@ async function processPresentationState() {
     }
   }
 
+
+  let endPresentations;
+
   if (!requiredSource) {
     console.log('No required source found');
+    endPresentations = presentationSources;
     return
   }
 
   // Identify redundant presentations
-  const endPresentations = presentationSources.filter(source => source != requiredSource)
+  endPresentations = presentationSources.filter(source => source != requiredSource)
 
   // Stop any redundant presentations
   for (let i = 0; i < endPresentations.length; i++) {
